@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\FileUpload;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,9 +17,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::post('/auth/upload',[FileUpload::class,'upload']);
+
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('product', ProductController::class);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
