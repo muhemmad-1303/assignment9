@@ -62,7 +62,12 @@ class ProductController extends Controller
 
     }
     public function sort(Request $request){
-        return response()->json(['message' => "succesfukly in"]);
+        $sort=$request->input('name');
+        $method=$request->input('sort');
+        $query = Product::where('user_id', auth()->user()->id);
+        $query->orderBy($sort,$method);
+        $data=$query->paginate(3);
+        return response()->json(['data'=>$data]);
     }
 
     /**
