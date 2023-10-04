@@ -39,7 +39,6 @@ export default {
                     ctx.emit('dissappear');
                     ctx.emit('handleproduct')
                     errors.value="";
-                    selectedFile.value="";
                 }
                 
             }

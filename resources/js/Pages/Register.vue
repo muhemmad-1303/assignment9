@@ -12,11 +12,13 @@
           <div class="inputbox">
             <label>Email:</label>
             <input type="text" v-model="form.email" />
+            <span v-if="errors && errors.email">{{ errors && errors.email.join('')}}</span>
            
           </div>
           <div class="inputbox">
             <label>password</label>
             <input type="password" v-model="form.password" />
+            <span v-if="errors && errors.password">{{ errors && errors.password.join('')}}</span>
            
           </div>
           <button type="submit">Sign Up</button>
@@ -132,9 +134,8 @@ button[type="submit"] {
 }
 
 span {
-  margin-top: 2px;
   color: red;
-  font-size: small;
+  font-size: x-small;
 }
 .mainregister {
   background-color: #d0e7d2;

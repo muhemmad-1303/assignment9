@@ -5,11 +5,14 @@
         <div class="inputbox">
           <label>User Name:</label>
           <input type="text" v-model="form.name" />
+          <span v-if="errors && errors.name">{{ errors && errors.name.join('')}}</span>
         </div>
         <div class="inputbox">
           <label>Password:</label>
           <input type="password" v-model="form.password" />
+          <span v-if="errors && errors.password">{{ errors && errors.password.join('')}}</span>
         </div>
+        <span v-if="message">{{ message}}</span>
         <button type="submit">Sign In</button>
         <div class="createMe">
           <router-link to="/register">Create Account</router-link>
@@ -25,6 +28,7 @@ export default {
   setup() {
     const errors = ref();
     const router = useRouter();
+    let message=ref();
     const form = reactive({
       name: "",
       password: "",
@@ -55,7 +59,12 @@ export default {
         })
         .catch((error) => {
           if (error.errors) {
-            errors.value = Object.values(error.errors);
+            errors.value = error.errors;
+          }
+          else{
+            
+            message.value=error.message
+            
           }
           console.error("Error:", error);
         });
@@ -65,6 +74,7 @@ export default {
       form,
       errors,
       handleLogin,
+      message,
     };
   },
 };
@@ -121,7 +131,7 @@ export default {
   padding: 10px;
   box-sizing: border-box;
   border: 0;
-  margin: 20px auto;
+  margin: 0px auto 10px auto;
   text-align: center;
 }
 a {
@@ -139,5 +149,9 @@ a {
   padding: 10px;
   text-align: center;
   border: 0;
+}
+span{
+  color: red;
+  font-size: x-small;
 }
 </style>
