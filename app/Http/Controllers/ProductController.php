@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use function Laravel\Prompts\search;
 
@@ -65,7 +66,7 @@ class ProductController extends Controller
         $sort=$request->input('name');
         $method=$request->input('sort');
         $query = Product::where('user_id', auth()->user()->id);
-        $query->orderBy($sort,$method);
+        $query->orderBy(DB::raw("CASE WHEN $sort REGEXP '^[0-9]+$' THEN CAST($sort AS UNSIGNED) ELSE $sort END"), $method);
         $data=$query->paginate(3);
         return response()->json(['data'=>$data]);
     }

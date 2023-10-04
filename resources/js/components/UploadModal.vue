@@ -3,9 +3,10 @@
     <div class="modalcard">
       <form @submit.prevent="fileSubmit" method="post">
         <input ref="selectedFile" type="file" />
+        <span v-if="errors && errors.file">{{ errors && errors.file.join('')}}</span>
         <div class="modalbutton">
-        <button @click="modalchange">cancel</button>
-        <button type="submit">upload</button>
+        <button @click="modalchange" class="cancelButton">cancel</button>
+        <button type="submit" class="uploadButton">upload</button>
         </div>
       </form>
     </div>
@@ -19,8 +20,9 @@ import { computed } from "vue";
 export default {
   emits: ['modal','dissappear','handleproduct'],
   setup(props, ctx) {
+    
     const selectedFile = ref();
-    ctx.emit('modal')
+    let errors=ref('');
     const modalchange=()=>{
         ctx.emit('dissappear')
     }
@@ -36,19 +38,21 @@ export default {
                     console.log("File uploaded successfully!", response.data);
                     ctx.emit('dissappear');
                     ctx.emit('handleproduct')
+                    errors.value="";
+                    selectedFile.value="";
                 }
-                else {
-                    console.error("File upload failed.");
-                }
+                
             }
             catch (error) {
-                console.error("Error uploading file:", error);
+                errors.value=error.response.data.errors;
+                console.log(errors.value);
             }
         };
   return {
     fileSubmit,
     selectedFile,
     modalchange,
+    errors,
   }
 }
    
@@ -80,6 +84,7 @@ export default {
     align-content: center;
     padding: 30px;
     box-sizing: border-box;
+    position: relative;
 }
 form{
     display: flex;
@@ -95,7 +100,7 @@ input[type="file"]{
     border-radius: 10px;
 }
 .modalbutton{
-    margin: auto auto;
+    margin: 80px auto;
     display: flex;
     gap: 10px;
 }
@@ -105,6 +110,20 @@ button{
     background: white;
     border-radius:10px;
     padding:10px;
-
+    color: white;
+    padding: 10px 20px;
+}
+.uploadButton{
+    background-color: #1877f2;
+}
+.cancelButton{
+    background-color: rgb(47, 45, 45);
+}
+span{
+    color: red;
+    font-size: xx-small;
+    position: absolute;
+    top: 80px;
+    
 }
 </style>
