@@ -11,7 +11,7 @@ export const request = async (method, url, data) => {
         let response = null;
         switch (method) {
             case 'get':
-                response = await axios.get(url, headers)
+                response = await axios.get(url,headers)
                 break;
             case 'post':
                 response = await axios.post(url, data, headers)

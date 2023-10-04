@@ -2,11 +2,12 @@
   <div class="mainregister">
     <div class="registercard">
       <h1>Create new account</h1>
-      <form @submit.prevent="handleSubmit" method="post">
+      <form @submit.prevent="handleSubmit">
         <div class="registerbody">
           <div class="inputbox">
             <label>User name:</label>
             <input type="text" v-model="form.name" />
+            <span v-if="errors && errors.name">{{ errors && errors.name.join('')}}</span>
           </div>
           <div class="inputbox">
             <label>Email:</label>
@@ -66,7 +67,8 @@ export default {
         })
         .catch((error) => {
           if (error.errors) {
-            errors.value = Object.values(error.errors);
+            errors.value = error.errors;
+            console.log(errors.value);
           }
           console.error('Error:', error);
         });

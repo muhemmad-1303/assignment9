@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
+use function Laravel\Prompts\search;
+
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $data=Product::where('user_id',auth()->user()->id)->get();
-        return response()->json(['data'=>$data]);
 
-
-
-
+        $data = Product::where('user_id', auth()->user()->id)->paginate(3);
+        return response()->json(['data' => $data,]);
     }
 
     /**
@@ -26,31 +24,45 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:csv',
-        ]);
-        $uploadedFile = $request->file('file');
-        $csvData = array_map('str_getcsv', file($uploadedFile->path()));
-        array_shift($csvData);
-        foreach ($csvData as $row) {
-            $product = Product::where('sku', $row[1])->first();
-            if ($product&&$product->user_id==auth()->user()->id) {
-                $product->update([
-                    'name' => $row[0],
-                    'price' => floatval($row[2]),
-                    'description' => $row[3],
-                ]);
-            } else {
-                Product::create([
-                    'user_id' => auth()->user()->id, 
-                    'name' => $row[0],
-                    'sku' => $row[1],
-                    'price' => floatval($row[2]),
-                    'description' => $row[3],
-                ]);
+
+        if ($search = $request->input('search')) {
+            $query = Product::query();
+            $query->where('name', 'like', '%' . $search . '%')
+                  ->where('user_id', auth()->user()->id);
+                   ;
+            $product = $query->paginate(3);
+            return response()->json(['data' => $product]);
+        } elseif($request->file('file')){
+            $request->validate([
+                'file' => 'required|mimes:csv',
+            ]);
+            $uploadedFile = $request->file('file');
+            $csvData = array_map('str_getcsv', file($uploadedFile->path()));
+            array_shift($csvData);
+            foreach ($csvData as $row) {
+                $product = Product::where('sku', $row[1])->first();
+                if ($product && $product->user_id == auth()->user()->id) {
+                    $product->update([
+                        'name' => $row[0],
+                        'price' => floatval($row[2]),
+                        'description' => $row[3],
+                    ]);
+                } else {
+                    Product::create([
+                        'user_id' => auth()->user()->id,
+                        'name' => $row[0],
+                        'sku' => $row[1],
+                        'price' => floatval($row[2]),
+                        'description' => $row[3],
+                    ]);
+                }
             }
+            return response()->json(['message' => "file uploaded"]);
         }
-        return response()->json(['message'=>"file uploaded"]);
+
+    }
+    public function sort(Request $request){
+        return response()->json(['message' => "succesfukly in"]);
     }
 
     /**
@@ -60,6 +72,7 @@ class ProductController extends Controller
     {
         //
     }
+
 
     /**
      * Update the specified resource in storage.

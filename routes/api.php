@@ -22,7 +22,8 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('product', ProductController::class);
+    Route::post('/product/sort',[ProductController::class,'sort']);
     Route::get('/user', function (Request $request) {
         return $request->user();
-    });
+    }); 
 });
