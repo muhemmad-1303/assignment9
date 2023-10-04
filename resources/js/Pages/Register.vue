@@ -1,7 +1,8 @@
 <template>
   <div class="mainregister">
+    <welcome></welcome>
     <div class="registercard">
-      <h1>Create new account</h1>
+      <h1>Create New</h1>
       <form @submit.prevent="handleSubmit">
         <div class="registerbody">
           <div class="inputbox">
@@ -33,8 +34,10 @@
 <script>
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import Welcome from '../components/Welcome.vue';
 
 export default {
+  components: { Welcome },
   setup() {
     const errors = ref();
     let router = useRouter();

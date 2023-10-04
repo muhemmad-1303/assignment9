@@ -1,5 +1,6 @@
 <template>
   <div class="mainlogin">
+    <welcome></welcome>
     <div class="logincard">
       <form method="post" @submit.prevent="handleLogin">
         <div class="inputbox">
@@ -24,7 +25,9 @@
 <script>
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import Welcome from "../components/Welcome.vue";
 export default {
+  components:{ Welcome,},
   setup() {
     const errors = ref();
     const router = useRouter();
